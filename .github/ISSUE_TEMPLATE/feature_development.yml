@@ -1,0 +1,24 @@
+name: '🚀 기능 개발'
+description: '새로운 기능 구현 및 로직 작업을 정의합니다.'
+title: 'TEMPLATE-0 SUBJECT > ACTION'
+labels: ['✨ Feature', '🚧 In Progress']
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: '작업 내용'
+      placeholder: '작업 내용에 대한 간략한 설명을 입력해 주세요.'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: '🔥 우선순위'
+      options:
+        - Critical (즉시 처리)
+        - High (이번 스프린트 핵심)
+        - Medium (비교적 여유 있음)
+        - Low (추후 개선 사항)
+    validations:
+      required: true

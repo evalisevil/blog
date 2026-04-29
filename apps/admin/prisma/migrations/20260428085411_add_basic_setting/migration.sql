@@ -1,0 +1,25 @@
+-- CreateTable
+CREATE TABLE "BasicSetting" (
+    "id" TEXT NOT NULL PRIMARY KEY DEFAULT 'default',
+    "siteName" TEXT NOT NULL,
+    "representativeEmail" TEXT NOT NULL,
+    "representativeTel" TEXT NOT NULL,
+    "fax" TEXT NOT NULL DEFAULT '',
+    "customerTel" TEXT NOT NULL DEFAULT '',
+    "address" TEXT NOT NULL DEFAULT '',
+    "representativeName" TEXT NOT NULL DEFAULT '',
+    "businessNumber" TEXT NOT NULL DEFAULT '',
+    "salesRegistrationNumber" TEXT NOT NULL DEFAULT '',
+    "copyright" TEXT NOT NULL,
+    "linkedIn" TEXT NOT NULL DEFAULT '',
+    "instagram" TEXT NOT NULL DEFAULT '',
+    "youtube" TEXT NOT NULL DEFAULT '',
+    "threads" TEXT NOT NULL DEFAULT '',
+    "facebook" TEXT NOT NULL DEFAULT '',
+    "github" TEXT NOT NULL DEFAULT '',
+    "logo" TEXT,
+    "whiteLogo" TEXT,
+    "favicon" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);

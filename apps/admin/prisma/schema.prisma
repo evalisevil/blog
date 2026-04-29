@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  master
+  admin
+  editor
+  viewer
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  accountId    String   @unique
+  password  String
+  name      String
+  role      Role @default(viewer)
+  recentLoginAt DateTime?
+  createdAt DateTime @default(now())
+  sessions Session?
+}
+
+model Session {
+  id String @id @default(cuid())
+  tokenHash String @unique
+  accountId String @unique
+  account   Account @relation(fields: [accountId], references: [id])
+  expiresAt DateTime
+  userAgent String
+  ipAddress String
+}
+
+
+enum InquiryStatus {
+  unread
+  read
+}
+model Inquiry {
+  id        String   @id @default(cuid())
+  status    InquiryStatus @default(unread)
+  name      String
+  email     String
+  phone     String
+  subject   String
+  content   String
+  received  DateTime @default(now())
+}
+
+/// 문의 회신용 단일 행 템플릿 (id는 앱에서 `default` 고정)
+model ReplyInquiryTemplate {
+  id          String   @id
+  senderName  String
+  senderEmail String
+  subject     String
+  body        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// 갤러리형 게시판 (썸네일 중심)
+model Gallery {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  thumbnail String
+  writer    String
+  isVisible Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// 일반 텍스트 게시판
+model General {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  writer    String
+  isVisible Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// 사이트 기본 설정 (단일 레코드)
+model BasicSetting {
+  id                      String   @id @default("default")
+  siteName                String
+  representativeEmail     String
+  representativeTel       String
+  fax                     String   @default("")
+  customerTel             String   @default("")
+  address                 String   @default("")
+  representativeName      String   @default("")
+  businessNumber          String   @default("")
+  salesRegistrationNumber String   @default("")
+  copyright               String
+  linkedIn                String   @default("")
+  instagram               String   @default("")
+  youtube                 String   @default("")
+  threads                 String   @default("")
+  facebook                String   @default("")
+  github                  String   @default("")
+  logo                    String?
+  whiteLogo               String?
+  favicon                 String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}

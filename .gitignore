@@ -1,7 +1,9 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Monorepo: 공통 규칙 — apps/admin, apps/web 및 향후 apps/* 에 동일 적용
+# https://help.github.com/articles/ignoring-files/
 
 # dependencies
-/node_modules
+node_modules
+
 /.pnp
 .pnp.*
 .yarn/*
@@ -11,14 +13,14 @@
 !.yarn/versions
 
 # testing
-/coverage
+**/coverage
 
-# next.js
-/.next/
-/out/
+# next.js (모든 앱·패키지)
+**/.next/
+**/out/
 
 # production
-/build
+build
 
 # misc
 .DS_Store
@@ -30,16 +32,15 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env (커밋이 필요하면 ! 로 예외 추가)
 .env*
 
 # vercel
-.vercel
+**/.vercel
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+**/next-env.d.ts
 
-.flaskenv*
-!.env.project
-!.env.vault
+*storybook.log
+storybook-static
