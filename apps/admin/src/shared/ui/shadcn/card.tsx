@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { cn } from '@/shared/lib'
-import { type CardHeaderTypeBProps } from '@/shared/types/card'
+import { type CardHeaderTypeBPropsType } from '@/shared/types/card'
 
 const Card = ({ className, ...props }: React.ComponentProps<'div'>) => {
   return (
@@ -35,7 +35,7 @@ const CardHeaderTypeB = ({
   content,
   children,
   ...props
-}: CardHeaderTypeBProps) => {
+}: CardHeaderTypeBPropsType) => {
   return (
     <div
       className={cn(

@@ -261,18 +261,9 @@ export default tseslint.config(
     extends: [tseslint.configs.disableTypeChecked],
   },
 
-  /* ── 5. 루트 Vite 설정 전용 parserOptions ── */
+  /* ── 5. 파일·폴더 이름 (check-file) ── */
   {
-    files: ['vite.config.ts'],
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.node.json',
-      },
-    },
-  },
-
-  /* ── 6. 파일·폴더 이름 (check-file) ── */
-  {
+    files: ['apps/**/*'],
     plugins: {
       'check-file': checkFilePlugin,
     },
@@ -293,6 +284,6 @@ export default tseslint.config(
     },
   },
 
-  /* ── 7. Prettier: 포맷 규칙과 충돌하는 ESLint 규칙 끔 (항상 마지막) ── */
+  /* ── 6. Prettier: 포맷 규칙과 충돌하는 ESLint 규칙 끔 (항상 마지막) ── */
   eslintConfigPrettier,
 )

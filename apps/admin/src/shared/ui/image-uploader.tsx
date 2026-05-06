@@ -5,31 +5,38 @@ import {
   CldImage,
   CldUploadWidget,
   type CloudinaryUploadWidgetInfo,
+  type CloudinaryUploadWidgetOptions,
   type CloudinaryUploadWidgetResults,
 } from 'next-cloudinary'
 import { useState } from 'react'
+import { type ControllerRenderProps, type FieldValues, type Path } from 'react-hook-form'
 
 import { Button } from './shadcn/button'
 
 const UPLOAD_PRESET = 'ml_default'
 
-export const FilePicker = ({
-  maxSize,
-  allowedFormat,
+export const ImageUploader = <T extends FieldValues>({
+  field,
+  options,
 }: {
-  maxSize: string
-  allowedFormat: string
+  field: ControllerRenderProps<T, Path<T>>
+  options: CloudinaryUploadWidgetOptions
 }) => {
-  const [publicId, setPublicId] = useState<string | null>(null)
+  const [publicId, setPublicId] = useState<string | null>(() => (field.value as string) ?? null)
+  const handleUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
+    const publicId = (result.info as CloudinaryUploadWidgetInfo)?.public_id ?? null
+    if (!publicId) return
+    setPublicId(publicId)
+    field.onChange(publicId)
+  }
 
   return (
     <div className="w-full">
       <CldUploadWidget
+        options={options}
         signatureEndpoint="/api/sign-cloudinary-params"
         uploadPreset={UPLOAD_PRESET}
-        onSuccess={(result: CloudinaryUploadWidgetResults) => {
-          setPublicId((result.info as CloudinaryUploadWidgetInfo)?.public_id ?? null)
-        }}
+        onSuccess={handleUploadSuccess}
       >
         {({ open }) => {
           return (
@@ -39,7 +46,7 @@ export const FilePicker = ({
                   <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-md border">
                     <CldImage
                       fill
-                      alt="업로드 이미지 미리보기"
+                      alt="이미지 미리보기"
                       src={publicId}
                       style={{ objectFit: 'cover' }}
                     />
@@ -83,8 +90,8 @@ export const FilePicker = ({
               </div>
 
               <div className="rounded-md bg-background px-3 py-2 text-xs leading-relaxed text-muted-foreground">
-                <p>권장 파일 크기: {maxSize} 이하</p>
-                <p>지원 파일 형식: {allowedFormat}</p>
+                <p>최대 파일 크기: {(options.maxFileSize ?? 0) / 1024}KB 이하</p>
+                <p>허용 파일 형식: {options.clientAllowedFormats?.join(', ')}</p>
               </div>
             </div>
           )

@@ -43,7 +43,7 @@ import { TableSorter } from './table-sorter'
 export const InquiryTable = ({ inquiryData }: { inquiryData: Inquiry[] }) => {
   const [sortedData, setSortedData] = useState<Inquiry[]>(inquiryData)
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null)
-  const [openDialogs, setOpenDialogs] = useState<Record<InquiryModalType, boolean>>({
+  const [openModals, setOpenModals] = useState<Record<InquiryModalType, boolean>>({
     read: false,
     delete: false,
   })
@@ -62,16 +62,11 @@ export const InquiryTable = ({ inquiryData }: { inquiryData: Inquiry[] }) => {
   }
 
   /** 모달 열기 */
-  const openDialog = (dialogId: InquiryModalType, inquiryId?: string) => {
+  const handleOpenModal = (dialogId: InquiryModalType, inquiryId?: string) => {
     if (inquiryId) {
       setSelectedInquiry(sortedData.find((inquiry) => inquiry.id === inquiryId) ?? null)
     }
-    setOpenDialogs((prev) => ({ ...prev, [dialogId]: true }))
-  }
-
-  /** 모달 닫기 */
-  const closeDialog = (dialogId: InquiryModalType) => {
-    setOpenDialogs((prev) => ({ ...prev, [dialogId]: false }))
+    setOpenModals((prev) => ({ ...prev, [dialogId]: true }))
   }
 
   return (
@@ -118,13 +113,15 @@ export const InquiryTable = ({ inquiryData }: { inquiryData: Inquiry[] }) => {
                     <TableCellText text={column.email} />
                     <TableCellText text={column.subject} />
                     <TableCellDate withTime date={column.received} />
-                    <TableCellActionDropdown onDelete={openDialog.bind(null, 'delete', column.id)}>
+                    <TableCellActionDropdown
+                      onDelete={handleOpenModal.bind(null, 'delete', column.id)}
+                    >
                       <TableModalTrigger
                         icon={Eye}
                         label="문의 읽기"
                         variant="default"
                         onOpen={() => {
-                          openDialog('read', column.id)
+                          handleOpenModal('read', column.id)
                           if (column.status === 'unread') {
                             changeInquiryStatus({ inquiryId: column.id, status: 'read' })
                           }
@@ -175,16 +172,24 @@ export const InquiryTable = ({ inquiryData }: { inquiryData: Inquiry[] }) => {
 
       {/* 문의 읽기 모달 */}
       <ReadInquiryModal
-        closeDialog={closeDialog}
         inquiry={selectedInquiry}
-        open={openDialogs['read']}
+        open={openModals['read']}
+        onOpenChange={(next) => {
+          if (!next) {
+            setOpenModals((prev) => ({ ...prev, read: false }))
+          }
+        }}
       />
 
       {/* 문의 삭제 모달 */}
       <DeleteInquiryModal
-        closeDialog={closeDialog}
         inquiry={selectedInquiry}
-        open={openDialogs['delete']}
+        open={openModals['delete']}
+        onOpenChange={(next) => {
+          if (!next) {
+            setOpenModals((prev) => ({ ...prev, delete: false }))
+          }
+        }}
       />
     </>
   )

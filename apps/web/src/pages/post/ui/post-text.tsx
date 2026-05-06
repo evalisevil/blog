@@ -115,7 +115,7 @@ div {
 
 export const PostText = () => {
   return (
-    <section className="mb-12">
+    <section className="mb-8 md:mb-12 w-full">
       <MdPreview
         className="flex-1 custom-preview detail"
         editorId="preview-only"

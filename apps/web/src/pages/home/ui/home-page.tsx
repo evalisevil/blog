@@ -1,4 +1,5 @@
-import { Hero, Tags } from '@/shared/ui'
+import { Tags } from '@/shared/ui'
+import { Hero } from '@/widgets/hero'
 
 import { Post } from './post'
 
@@ -144,7 +145,7 @@ export const HomePage = async ({ searchParams }: { searchParams: { tag: string }
       {/* Posts */}
       <section className="flex flex-col gap-4 mt-12 space-y-4">
         <p className="text-sm text-muted-foreground">
-          전체 <strong className="text-primary">{BLOG_POSTS.length}</strong>개 포스트
+          전체 <strong className="text-primary">{BLOG_POSTS.length}</strong>개 포스트가 있습니다.
         </p>
         {BLOG_POSTS.map((post) => (
           <Post key={post.title} {...post} />

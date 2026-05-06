@@ -60,7 +60,7 @@ export const PAGES_SEO_MOCK: PageSeoMockType[] = [
   },
 ]
 
-export function buildPagesDefaultValues(): Record<string, Record<string, unknown>> {
+export const buildPagesDefaultValues = (): Record<string, Record<string, unknown>> => {
   const pages: Record<string, Record<string, unknown>> = {}
   for (const p of PAGES_SEO_MOCK) {
     const row: Record<string, unknown> = {

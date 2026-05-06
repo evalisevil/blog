@@ -1,12 +1,12 @@
 import { type PROGRESS_VARIANTS } from '../constants/progress'
 
-export type ProgressVariant = (typeof PROGRESS_VARIANTS)[keyof typeof PROGRESS_VARIANTS]
+export type ProgressVariantType = (typeof PROGRESS_VARIANTS)[keyof typeof PROGRESS_VARIANTS]
 
-export interface ProgressScore {
+export interface ProgressScoreType {
   label: string
   score: number
 }
 
-export interface ProgressGroupProps {
-  scores: ProgressScore[]
+export interface ProgressGroupPropsType {
+  scores: ProgressScoreType[]
 }

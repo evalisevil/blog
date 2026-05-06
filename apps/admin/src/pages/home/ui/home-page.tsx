@@ -1,5 +1,7 @@
 import { TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
+import { getActivityList } from '@/entities/activity'
+import { getUnreadInquiryList } from '@/entities/inquiry'
 import { DashboardPageShell } from '@/shared/ui/dashboard-page-shell'
 import { StatCard, StatCardContainer } from '@/shared/ui/stat-cards'
 
@@ -7,7 +9,10 @@ import { CurrentLogs } from './current-logs'
 import { UnreadMessage } from './unread-message'
 import { VisitorChart } from './visitor-chart'
 
-export const HomePage = () => {
+export const HomePage = async () => {
+  const { count: unreadInquiryCount, data: unreadInquiryData } = await getUnreadInquiryList()
+  const { data: activityData } = await getActivityList()
+
   return (
     <DashboardPageShell title="대시보드">
       <StatCardContainer>
@@ -59,8 +64,11 @@ export const HomePage = () => {
       <VisitorChart />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <CurrentLogs />
-        <UnreadMessage />
+        <UnreadMessage
+          unreadInquiryCount={unreadInquiryCount}
+          unreadInquiryList={unreadInquiryData}
+        />
+        <CurrentLogs activityData={activityData} />
       </div>
     </DashboardPageShell>
   )

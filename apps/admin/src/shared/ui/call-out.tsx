@@ -14,7 +14,7 @@ export const CallOut = ({
   const Icon = icon
 
   return (
-    <div className="bg-primary/5 rounded-lg p-4 flex gap-3">
+    <div className="bg-primary/5 rounded-lg p-4 flex gap-3 w-full">
       <Icon className="text-primary" size={24} />
       <div className="space-y-0.5">
         <CardTitle className="text-primary">{title}</CardTitle>

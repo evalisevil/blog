@@ -12,7 +12,9 @@ export const RootLayout = ({ children }: { children: React.ReactNode }) => {
       <body>
         <Header />
         <div className="flex flex-col min-h-screen">
-          <GridContainer className="flex-1 pt-40 pb-20">{children}</GridContainer>
+          <GridContainer className="flex-1 pt-20 md:pt-40 pb-10 md:pb-20 ">
+            {children}
+          </GridContainer>
           <Footer />
         </div>
       </body>

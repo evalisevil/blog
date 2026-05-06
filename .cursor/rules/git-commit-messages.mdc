@@ -1,0 +1,41 @@
+---
+description: Git 커밋 메시지(Conventional Commits, 한국어) 생성 규칙
+alwaysApply: true
+---
+
+# Git Commit Message Rules
+
+커밋 메시지를 생성할 때는 다음 규칙을 **엄격히** 지킬 것.
+
+## 형식
+
+1. **Conventional Commits** 형식: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`, `perf:`, `ci:`, `build:`, `revert:` 등 적절한 타입 + 콜론 + 스페이스.
+2. **제목(첫 줄)**
+   - **50자 이내**
+   - **변경의 이유**(왜 이 변경을 했는지)를 담을 것. 무엇만이 아니라, 동기/목적이 드러나게.
+3. **본문(빈 줄 다음)**
+   - **변경된 기술적 세부 사항**을 **불렛 포인트**(`- `)로 나열할 것.
+4. **언어**: **전체(제목·본문)를 한국어**로 작성할 것.
+
+## 예시
+
+```text
+feat: 문의 읽음 처리 API 연동을 위해 훅 추가
+
+- useReadInquiry 훅에서 POST /inquiries/:id/read 호출
+- 낙관적 UI 업데이트 후 실패 시 롤백
+- 에러 토스트 메시지 통일
+```
+
+```text
+fix: 시드 스크립트가 SQLite 잠금으로 실패하던 문제 수정
+
+- 트랜잭션을 단일 배치로 합쳐 잠금 시간 축소
+- Activity 로그 insert 순서 정리
+```
+
+## 하지 말 것
+
+- 영어만 쓰거나, 제목만 있고 이유가 없는 한 줄
+- 50자 넘는 제목, Conventional Commits 타입 없이 자유 문장만 쓰기
+- 본문을 문단만 길게 쓰고 불렛이 없이 나열만 하기 (기술 세부는 불렛으로)

@@ -1,7 +1,8 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type BasicSetting } from '@prisma/client'
+import { type Basic } from '@prisma/client'
+import { useMutation } from '@tanstack/react-query'
 import {
   Copyright,
   FileText,
@@ -22,8 +23,11 @@ import {
 import { useForm } from 'react-hook-form'
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa'
 import { FaSquareThreads } from 'react-icons/fa6'
+import { toast } from 'sonner'
 
-import { CallOut, FilePicker } from '@/shared/ui'
+import { api } from '@/shared/api'
+import { TOAST_MESSAGES } from '@/shared/config'
+import { CallOut, ImageUploader } from '@/shared/ui'
 import { ButtonGroup } from '@/shared/ui/buttons'
 import { CardContainer, CardSubContent, CardTitleWithIcon } from '@/shared/ui/card'
 import { Button } from '@/shared/ui/shadcn/button'
@@ -38,21 +42,30 @@ import {
 } from '@/shared/ui/shadcn/form'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/shared/ui/shadcn/input-group'
 
-import { type BasicFormValuesType, basicSchema } from '../model/basic-schema'
+import { basicDefaultValues, type BasicFormValuesType, basicSchema } from '../model/basic-schema'
 
-export const BasicForm = ({ basicData }: { basicData: BasicSetting }) => {
+export const BasicForm = ({ basicData }: { basicData: Basic | null }) => {
   const form = useForm<BasicFormValuesType>({
-    defaultValues: basicData,
+    defaultValues: basicData ?? basicDefaultValues,
     mode: 'onTouched',
     resolver: zodResolver(basicSchema),
   })
 
-  const { clearErrors, formState, handleSubmit, setError, register, reset, control } = form
+  const { clearErrors, formState, handleSubmit, control } = form
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: BasicFormValuesType) => api.post('/basic', values),
+    onSuccess: () => {
+      toast.success(TOAST_MESSAGES.SUCCESS.UPDATE)
+    },
+    onError: (message: string) => {
+      toast.error(message ?? TOAST_MESSAGES.ERROR.UPDATE)
+    },
+  })
 
   const onSubmit = handleSubmit(async (values) => {
-    console.log('values', values)
     clearErrors('root')
-    // mutate(values)
+    mutate(values)
   })
 
   return (
@@ -250,7 +263,7 @@ export const BasicForm = ({ basicData }: { basicData: BasicSetting }) => {
                   name="copyright"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>저작권 연도</FormLabel>
+                      <FormLabel required>카피라이트</FormLabel>
                       <FormControl>
                         <InputGroup>
                           <InputGroupInput
@@ -422,7 +435,14 @@ export const BasicForm = ({ basicData }: { basicData: BasicSetting }) => {
                   <FormItem className="md:col-span-2">
                     <FormLabel className="text-sm font-medium">기본 로고</FormLabel>
                     <FormControl>
-                      <FilePicker allowedFormat="PNG / SVG / WEBP" maxSize="1MB" />
+                      <ImageUploader
+                        field={field}
+                        options={{
+                          clientAllowedFormats: ['png', 'jpg', 'webp', 'svg'],
+                          maxFileSize: 1024 * 1024,
+                          multiple: false,
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -430,12 +450,19 @@ export const BasicForm = ({ basicData }: { basicData: BasicSetting }) => {
               />
               <FormField
                 control={control}
-                name="logo"
+                name="whiteLogo"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel className="text-sm font-medium">화이트 로고</FormLabel>
                     <FormControl>
-                      <FilePicker allowedFormat="PNG / SVG / WEBP" maxSize="1MB" />
+                      <ImageUploader
+                        field={field}
+                        options={{
+                          clientAllowedFormats: ['png', 'jpg', 'webp', 'svg'],
+                          maxFileSize: 1024 * 1024,
+                          multiple: false,
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -443,12 +470,19 @@ export const BasicForm = ({ basicData }: { basicData: BasicSetting }) => {
               />
               <FormField
                 control={control}
-                name="logo"
+                name="favicon"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel className="text-sm font-medium">파비콘</FormLabel>
                     <FormControl>
-                      <FilePicker allowedFormat="PNG / SVG / WEBP" maxSize="1MB" />
+                      <ImageUploader
+                        field={field}
+                        options={{
+                          clientAllowedFormats: ['ico'],
+                          maxFileSize: 1024 * 256,
+                          multiple: false,
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -459,8 +493,8 @@ export const BasicForm = ({ basicData }: { basicData: BasicSetting }) => {
         </CardContainer>
 
         <ButtonGroup>
-          <Button type="submit">
-            {formState.isSubmitting ? <Loader2 className="size-4 animate-spin" /> : '저장'}
+          <Button disabled={!formState.isDirty || isPending} type="submit">
+            {isPending ? <Loader2 className="size-4 animate-spin" /> : '저장'}
           </Button>
         </ButtonGroup>
       </form>

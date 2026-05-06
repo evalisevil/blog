@@ -1,9 +1,9 @@
 import { PROGRESS_VARIANTS } from '@/shared/constants/progress'
-import { type ProgressGroupProps, type ProgressScore } from '@/shared/types/progress'
+import { type ProgressGroupPropsType, type ProgressScoreType } from '@/shared/types/progress'
 import { Progress } from '@/shared/ui/shadcn/progress'
 
-export const ProgressGroup = ({ scores }: ProgressGroupProps) => {
-  const getVariant = ({ score }: Pick<ProgressScore, 'score'>) => {
+export const ProgressGroup = ({ scores }: ProgressGroupPropsType) => {
+  const getVariant = ({ score }: Pick<ProgressScoreType, 'score'>) => {
     if (score >= 90) return PROGRESS_VARIANTS.success
     if (score >= 70) return PROGRESS_VARIANTS.warning
 

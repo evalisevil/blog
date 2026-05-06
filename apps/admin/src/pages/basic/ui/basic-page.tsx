@@ -5,11 +5,9 @@ import { DashboardPageShell } from '@/shared/ui/dashboard-page-shell'
 import { BasicForm } from './basic-form'
 
 export const BasicPage = async () => {
-  const basicData = await prisma.basicSetting.findFirst()
-
-  if (!basicData) {
-    return null
-  }
+  const basicData = await prisma.basic.findUnique({
+    where: { id: 'default' },
+  })
 
   return (
     <DashboardPageShell

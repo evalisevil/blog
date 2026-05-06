@@ -15,11 +15,10 @@
     "start:web": "pnpm --filter @blog/web start",
     "start:admin": "pnpm --filter @blog/admin start",
     "clean": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml apps/*/.next && pnpm store prune && pnpm install",
-    "format": "prettier --check \"apps/**/*.{js,ts,tsx,json,css,md}\" \"*.{js,mjs,ts,json}\"",
-    "format:write": "prettier --write \"apps/**/*.{js,ts,tsx,json,css,md}\" \"*.{js,mjs,ts,json}\"",
-    "lint": "eslint apps/admin apps/web",
-    "lint:fix": "eslint apps/admin apps/web --fix",
-    "typecheck": "pnpm -r typecheck",
+    "format": "prettier --write .",
+    "lint": "eslint --max-warnings=0",
+    "lint:fix": "eslint --fix",
+    "type-check": "pnpm -r type-check",
     "prepare": "husky"
   },
   "devDependencies": {

@@ -7,14 +7,14 @@
     "dev": "next dev --port 5050",
     "build": "next build",
     "start": "next start --port 5050",
-    "type-check": "tsc --noEmit",
     "test": "vitest run",
     "db:migrate": "prisma migrate dev --name init",
     "db:generate": "prisma generate",
     "db:seed": "tsx db/seed.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "clean": "rm -rf node_modules .next pnpm-lock.yaml && pnpm store prune && pnpm install"
+    "clean": "rm -rf node_modules .next pnpm-lock.yaml && pnpm store prune && pnpm install",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

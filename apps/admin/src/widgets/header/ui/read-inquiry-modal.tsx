@@ -3,7 +3,6 @@
 import type { Inquiry } from '@prisma/client'
 import { formatDate } from 'date-fns'
 
-import { type InquiryModalType } from '@/shared/types'
 import { Button } from '@/shared/ui/shadcn/button'
 import {
   Dialog,
@@ -17,17 +16,12 @@ import { ScrollArea } from '@/shared/ui/shadcn/scroll-area'
 
 export const ReadInquiryModal = ({
   inquiry,
-  open,
-  closeDialog,
-}: {
-  inquiry: Inquiry | null
-  open: boolean
-  closeDialog: (dialogId: InquiryModalType) => void
-}) => {
+  ...props
+}: { inquiry: Inquiry | null } & React.ComponentProps<typeof Dialog>) => {
   if (!inquiry) return null
 
   return (
-    <Dialog open={open} onOpenChange={closeDialog.bind(null, 'read')}>
+    <Dialog {...props}>
       <DialogContent className="max-h-[min(90vh,720px)] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-balance pr-8">{inquiry.subject}</DialogTitle>

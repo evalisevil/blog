@@ -111,6 +111,7 @@ export const SeoForm = () => {
 
   const { control } = form
 
+  // eslint-disable-next-line
   const [defaultTitle, defaultDescription, titleSuffix, titleSeparator] = form.watch([
     'defaultTitle',
     'defaultDescription',

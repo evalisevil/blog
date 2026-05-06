@@ -1,14 +1,8 @@
-import 'dayjs/locale/ko' // 한국어 설정
-
 import { formatDate } from 'date-fns'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { Calendar } from 'lucide-react'
 
+import { getRelativeDate } from '@/shared/lib'
 import { TableCell } from '@/shared/ui/shadcn/table'
-
-dayjs.extend(relativeTime)
-dayjs.locale('ko')
 
 export const TableCellDate = ({
   date,
@@ -28,7 +22,7 @@ export const TableCellDate = ({
         ) : (
           <span className="text-xs text-muted-foreground">
             {relativeDate
-              ? dayjs(date).fromNow()
+              ? getRelativeDate(date)
               : formatDate(date, withTime ? 'yyyy.MM.dd HH:mm' : 'yyyy.MM.dd')}
           </span>
         )}

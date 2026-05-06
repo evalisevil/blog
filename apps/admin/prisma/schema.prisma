@@ -27,7 +27,8 @@ model Account {
   role      Role @default(viewer)
   recentLoginAt DateTime?
   createdAt DateTime @default(now())
-  sessions Session?
+  sessions     Session?
+  activityLogs ActivityLog[]
 }
 
 model Session {
@@ -56,18 +57,6 @@ model Inquiry {
   received  DateTime @default(now())
 }
 
-/// 문의 회신용 단일 행 템플릿 (id는 앱에서 `default` 고정)
-model ReplyInquiryTemplate {
-  id          String   @id
-  senderName  String
-  senderEmail String
-  subject     String
-  body        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-/// 갤러리형 게시판 (썸네일 중심)
 model Gallery {
   id        String   @id @default(cuid())
   title     String
@@ -80,7 +69,6 @@ model Gallery {
   updatedAt DateTime @updatedAt
 }
 
-/// 일반 텍스트 게시판
 model General {
   id        String   @id @default(cuid())
   title     String
@@ -92,8 +80,7 @@ model General {
   updatedAt DateTime @updatedAt
 }
 
-/// 사이트 기본 설정 (단일 레코드)
-model BasicSetting {
+model Basic {
   id                      String   @id @default("default")
   siteName                String
   representativeEmail     String
@@ -116,4 +103,34 @@ model BasicSetting {
   favicon                 String?
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
+}
+
+enum ActivityLogAction {
+  login
+  logout
+  create
+  update
+  delete
+}
+
+enum ActivityLogStatus {
+  success
+  info
+  warning
+  error
+  publish
+}
+
+model ActivityLog {
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  action      String
+  message String
+  status      ActivityLogStatus
+  actorName   String
+  actorId     String?
+  actor       Account?          @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([actorId])
 }

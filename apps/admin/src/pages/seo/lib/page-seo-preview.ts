@@ -1,11 +1,11 @@
 import { PAGE_SEO_PREVIEW_LABELS } from '../constants'
 import type { PageSeoMockType } from '../types/page-seo'
 
-export type PageSeoPreviewOverrides = Partial<
+export type PageSeoPreviewOverridesType = Partial<
   Pick<PageSeoMockType, 'title' | 'titleSuffix' | 'titleSeparator' | 'description'>
 >
 
-export function buildTitlePreviewLine(head: string, tail: string, separator: string): string {
+export const buildTitlePreviewLine = (head: string, tail: string, separator: string): string => {
   const h = head.trim()
   const t = tail.trim()
   if (!h && !t) {
@@ -21,10 +21,10 @@ export function buildTitlePreviewLine(head: string, tail: string, separator: str
   return `${h} ${separator} ${t}`
 }
 
-export function isPageSeoComplete(
+export const isPageSeoComplete = (
   page: PageSeoMockType,
   row?: Record<string, unknown> | null,
-): boolean {
+): boolean => {
   const title = row?.title !== undefined ? String(row.title) : page.title
   if (!title.trim()) {
     return false
@@ -40,10 +40,10 @@ export function isPageSeoComplete(
   return true
 }
 
-export function getPageSeoPreviewLine(
+export const getPageSeoPreviewLine = (
   page: PageSeoMockType,
-  formRow?: PageSeoPreviewOverrides | null,
-): string {
+  formRow?: PageSeoPreviewOverridesType | null,
+): string => {
   const title = formRow?.title !== undefined ? String(formRow.title) : page.title
   const titleSuffix =
     formRow?.titleSuffix !== undefined ? String(formRow.titleSuffix) : page.titleSuffix

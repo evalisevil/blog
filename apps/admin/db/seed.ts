@@ -106,7 +106,8 @@ const generalBody = (n: number): string => {
 const main = async () => {
   prisma.$transaction(async (tx) => {
     const txWithInquiry = tx
-    await tx.basicSetting.deleteMany()
+    await tx.activityLog.deleteMany()
+    await tx.basic.deleteMany()
     await tx.gallery.deleteMany()
     await tx.general.deleteMany()
     await txWithInquiry.inquiry.deleteMany()
@@ -114,7 +115,7 @@ const main = async () => {
     await tx.account.deleteMany()
   })
 
-  await Promise.all([
+  const [masterAcc, adminAcc, editorAcc, viewerAcc1, viewerAcc2] = await Promise.all([
     prisma.account.create({
       data: {
         accountId: 'master',
@@ -156,6 +157,136 @@ const main = async () => {
       },
     }),
   ])
+
+  const logAt = (daysAgo: number, hour: number, minute: number): Date =>
+    setSeconds(setMinutes(setHours(subDays(new Date(), daysAgo), hour), minute), 0)
+
+  type ActivitySeedType = {
+    t: { daysAgo: number; hour: number; minute: number }
+    action: string
+    message: string
+    status: 'success' | 'info' | 'warning' | 'error' | 'publish'
+    actor: { id: string | null; name: string }
+  }
+
+  const activitySeeds: ActivitySeedType[] = [
+    {
+      t: { daysAgo: 0, hour: 9, minute: 12 },
+      action: 'login',
+      message: '관리자 계정으로 로그인했습니다.',
+      status: 'success',
+      actor: { id: masterAcc.id, name: masterAcc.name },
+    },
+    {
+      t: { daysAgo: 0, hour: 10, minute: 34 },
+      action: 'update',
+      message: '갤러리 게시글 썸네일과 본문을 업데이트했습니다.',
+      status: 'info',
+      actor: { id: editorAcc.id, name: editorAcc.name },
+    },
+    {
+      t: { daysAgo: 0, hour: 11, minute: 5 },
+      action: 'update',
+      message: '문의 3건을 읽음 처리했습니다.',
+      status: 'info',
+      actor: { id: adminAcc.id, name: adminAcc.name },
+    },
+    {
+      t: { daysAgo: 0, hour: 13, minute: 48 },
+      action: 'publish',
+      message: '새 공지 사항이 게시되었습니다.',
+      status: 'publish',
+      actor: { id: editorAcc.id, name: editorAcc.name },
+    },
+    {
+      t: { daysAgo: 0, hour: 15, minute: 22 },
+      action: 'warning',
+      message: '메모리 사용량이 80%를 초과했습니다.',
+      status: 'warning',
+      actor: { id: null, name: '시스템' },
+    },
+    {
+      t: { daysAgo: 1, hour: 8, minute: 55 },
+      action: 'login',
+      message: 'IP 211.xxx.xxx.xxx에서 로그인했습니다.',
+      status: 'success',
+      actor: { id: viewerAcc1.id, name: viewerAcc1.name },
+    },
+    {
+      t: { daysAgo: 1, hour: 14, minute: 10 },
+      action: 'update',
+      message: '사이트명·연락처 정보를 저장했습니다.',
+      status: 'success',
+      actor: { id: adminAcc.id, name: adminAcc.name },
+    },
+    {
+      t: { daysAgo: 1, hour: 16, minute: 40 },
+      action: 'success',
+      message: '일일 데이터 백업이 성공적으로 완료되었습니다.',
+      status: 'success',
+      actor: { id: null, name: '시스템' },
+    },
+    {
+      t: { daysAgo: 2, hour: 10, minute: 18 },
+      action: 'create',
+      message: '새 뷰어 계정 초대 메일을 발송했습니다.',
+      status: 'info',
+      actor: { id: masterAcc.id, name: masterAcc.name },
+    },
+    {
+      t: { daysAgo: 2, hour: 11, minute: 33 },
+      action: 'error',
+      message: '외부 결제 연동 응답이 5xx를 반환했습니다.',
+      status: 'error',
+      actor: { id: null, name: '시스템' },
+    },
+    {
+      t: { daysAgo: 3, hour: 9, minute: 0 },
+      action: 'login',
+      message: '5회 연속 비밀번호 오류로 계정이 일시 잠겼습니다.',
+      status: 'warning',
+      actor: { id: viewerAcc2.id, name: viewerAcc2.name },
+    },
+    {
+      t: { daysAgo: 3, hour: 15, minute: 27 },
+      action: 'update',
+      message: '갤러리 2건의 공개 여부를 변경했습니다.',
+      status: 'info',
+      actor: { id: editorAcc.id, name: editorAcc.name },
+    },
+    {
+      t: { daysAgo: 5, hour: 11, minute: 44 },
+      action: 'create',
+      message: '갤러리 신규 게시글이 등록되었습니다.create',
+      status: 'publish',
+      actor: { id: editorAcc.id, name: editorAcc.name },
+    },
+    {
+      t: { daysAgo: 7, hour: 18, minute: 2 },
+      action: 'logout',
+      message: '장시간 미사용으로 세션이 종료되었습니다.',
+      status: 'info',
+      actor: { id: adminAcc.id, name: adminAcc.name },
+    },
+    {
+      t: { daysAgo: 14, hour: 10, minute: 15 },
+      action: 'success',
+      message: '주간 전체 백업 아카이브를 생성했습니다.',
+      status: 'success',
+      actor: { id: null, name: '시스템' },
+    },
+  ]
+
+  await prisma.activityLog.createMany({
+    data: activitySeeds.map((row) => ({
+      createdAt: logAt(row.t.daysAgo, row.t.hour, row.t.minute),
+      action: row.action,
+      message: row.message,
+      status: row.status,
+      actorName: row.actor.name,
+      actorId: row.actor.id,
+    })),
+  })
 
   const statusCycle = ['unread', 'read'] as const
   const prismaWithInquiry = prisma as typeof prisma & { inquiry: typeof prisma.inquiry }
@@ -204,7 +335,7 @@ const main = async () => {
     }),
   })
 
-  await prisma.basicSetting.create({
+  await prisma.basic.create({
     data: BASIC_SETTING_SEED,
   })
 }
